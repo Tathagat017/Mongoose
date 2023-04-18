@@ -1,0 +1,25 @@
+{
+  "name": "mongoose",
+  "version": "1.0.0",
+  "description": "Connecting Express to Mongo DB (server to db)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tathagat017/Mongoose.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tathagat017/Mongoose/issues"
+  },
+  "homepage": "https://github.com/Tathagat017/Mongoose#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.0.4",
+    "nodemon": "^2.0.22"
+  }
+}
