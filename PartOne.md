@@ -18,7 +18,11 @@ frontend is a combination of HTML/CSS and JavaScript/React/Vue/Angular <=>
 
 //Mongoose
 install : npm install mongoose
+
+//Connection to the database
+
 // logic to connect the dB will be inside a function->main
+
 const connection<variable name> = mongoose.connect("MongoDB URL");
 
 ............................MongoSh...........................
@@ -68,7 +72,9 @@ connection.disconnect() -- > to disconnect
 async function main() {
 //logic to connect to Mongo
 try {
-~ const connection = await mongoose.connect("mongodb://127.0.0.1:27017");
+
+const connection = await mongoose.connect("mongodb://127.0.0.1:27017/<Name of the dB to add/create in Mongo>");
+
 console.log("Connected to Mongo");
 ! connection.disconnect();
 ! console.log("Disconnected from Mongo");
@@ -80,4 +86,38 @@ console.log(err);
 
 //Structuring the data via Mongoose:-
 
-Cast or Mold to provide shape :=
+Cast or Mold to provide shape := First we need the dimension of the casr or the mold to get the right shape --> we need a kind of blueprint or a ready made structure for that purpose
+
+In form of data :- Like ice cubes in fridge which ar froozen in the freezer tray :-
+Blueprint : Schema/ structure only
+freezer tray: MODEL
+ICE cube: MongoDB documents
+
+thus in order to create the final document that will go inside the database :
+we need schema and Model which creates the MongoDB document
+Schema --> Model-->Document-->dB
+
+//\* Structuring the data :-
+
+// ~ 1.Schema => 2.Model => 3.Document
+
+const userSchema = mongoose.Schema({
+name: String,
+age: Number,
+city: String,
+});
+
+//! const userModel = mongoose.model("collection Name", schema from which Model should be created);
+//_ Moongoose will automatically collection : "users"
+//_ the name of the db is placed in the Mongo DB url in connect
+
+const userModel = mongoose.model("user", userSchema);
+
+//\* mongoose will automatically add 's to to the collection last of the collection name : "users"
+
+id , \_v is automatically added to the documents -- version is the internal version or revision of the document--> keep tracks of the change in documents
+
+//Question why is userSchema and userModel written below but still works?
+The reason is not hoisting as const is not hoisted, its becuase main function is async in nature
+
+// Mongoose does not have insertOne option :
