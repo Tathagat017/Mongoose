@@ -27,6 +27,15 @@ async function main() {
 
     //~````````````````````````````````
 
+    const user2 = new UserModel2({
+      name: "Raj",
+      city: "Delhi",
+      age: 77,
+    });
+    await user2.save();
+    //!     ("")== falsy value ,hence empty string will also give an error
+
+    //~++++++++++++++++++++++++++++++++
     console.log("Connected to Mongo");
     connection.disconnect();
     console.log("Disconnected from Mongo");
@@ -80,3 +89,17 @@ const UserModel = mongoose.model("user", userSchema);
 // Mongoose does not have insertOne option :
 //Single user Model
 //constructor function : Model is constructor function
+
+//Schema validates the type of the data key in the document
+const UserSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    age: { type: Number, required: true },
+    city: { type: String, required: true },
+  },
+  {
+    versionKey: false, //removes version key
+  }
+);
+
+const UserModel2 = mongoose.model("userNew", UserSchema);
