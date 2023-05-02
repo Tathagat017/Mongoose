@@ -1,31 +1,57 @@
 const { UserModel } = require("../Model/UserModel.js");
 const express = require("express");
-
+const jwt = require("jsonwebtoken");
 const userRouter = express.Router();
-
-userRouter.get("/users", async (req, res) => {
+const bcrypt = require("bcrypt");
+userRouter.get("/", async (req, res) => {
   const users = await UserModel.find().sort({ name: -1 });
   res.setHeader("Content-Type", "text/html");
   res.status(200).send(users);
 });
 //to sort users by their email address (alpha) in descending order: users = await UserModel.find().sort({email:-1})
-userRouter.post("/users/register", async (req, res) => {
+userRouter.post("/register", async (req, res) => {
+  const { email, password } = req.body;
   try {
-    let user = await new UserModel(req.body);
-    user.save();
-    res.status(200).send("created successfully");
+    bcrypt.hash(password, 5, async function (err, hash) {
+      if (err) {
+        res.status(405).send({ error: "error received" });
+      }
+      let user = await new UserModel({
+        ...req.body,
+        password: hash,
+      });
+      user.save();
+      res.status(200).send("created successfully");
+    });
   } catch (err) {
     console.log(err);
     res.status(401).send({ Error: err.message });
   }
 });
 
-userRouter.post("/users/login", async (req, res) => {
+userRouter.post("/login", async (req, res) => {
+  const { email, password } = req.body;
   try {
+    let user = await UserModel.findOne({ email: email });
+
+    if (user) {
+      bcrypt.compare(password, user.password, function (err, result) {
+        if (result) {
+          var token = jwt.sign({ authorId: user._id }, "key");
+          res
+            .status(200)
+            .send({ msg: "login successfully done", token: token });
+        } else {
+          res.send({ error: "here error" });
+        }
+      });
+    } else {
+      res.send({ err: "not found user" });
+    }
   } catch (err) {}
 });
 
-userRouter.patch("/users/update/:id", async (req, res) => {
+userRouter.patch("/update/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UserModel.find({ _id: id });
@@ -41,7 +67,7 @@ userRouter.patch("/users/update/:id", async (req, res) => {
   }
 });
 
-userRouter.delete("/users/delete/:id", async (req, res) => {
+userRouter.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id);
